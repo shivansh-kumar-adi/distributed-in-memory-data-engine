@@ -1,0 +1,11 @@
+name: Distributed In-Memory Data Engine CI
+on: [push, pull_request]
+jobs:
+  build:
+    strategy: {matrix: {os: [ubuntu-latest, windows-latest]}}
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v4
+      - run: cmake -S . -B build -DCMAKE_BUILD_TYPE=Release -DAVENZA_FETCH_GTEST=ON
+      - run: cmake --build build --config Release --parallel 2
+      - run: ctest --test-dir build -C Release --output-on-failure
